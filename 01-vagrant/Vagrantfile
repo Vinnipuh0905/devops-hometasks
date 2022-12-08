@@ -1,0 +1,31 @@
+
+Vagrant.configure("2") do |config|
+ 
+  config.vm.box = "generic/debian11"
+  
+    config.vm.network "forwarded_port", guest: 80, host: 8080 
+
+    config.vm.network "forwarded_port", guest: 81, host: 8081 
+
+    #config.vm.network "private_network", ip: "192.168.56.38"
+
+    config.vm.synced_folder "./data", "/home/vagrant/data", type: "rsync"
+
+    config.vm.provider "virtualbox" do |vb|
+       vb.memory = "512"
+end
+ 
+  config.vm.provision "shell", inline: <<-SHELL
+    apt-get update
+    apt-get -y install apache2
+    sudo systemctl start apache2
+    sudo apt -y install php
+    sudo cp rv -f /home/vagrant/data/000-default.conf /etc/apache2/sites-available/
+    echo "Listen 81" >> /etc/apache2/ports.conf
+    echo "<Directory /home/vagrant/data/>" >> /etc/apache2/apache2.conf
+    echo "   AllowOverride all" >> /etc/apache2/apache2.conf
+    echo "   Require all granted" >> /etc/apache2/apache2.conf
+    echo "</Directory>" >> /etc/apache2/apache2.conf
+    sudo systemctl restart apache2
+  SHELL
+end
