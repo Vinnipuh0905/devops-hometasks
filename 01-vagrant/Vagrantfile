@@ -20,7 +20,7 @@ end
     apt-get -y install apache2
     sudo systemctl start apache2
     sudo apt -y install php
-    sudo cp rv -f /home/vagrant/data/000-default.conf /etc/apache2/sites-available/
+    sudo cp -r -f /home/vagrant/data/000-default.conf /etc/apache2/sites-available/
     echo "Listen 81" >> /etc/apache2/ports.conf
     echo "<Directory /home/vagrant/data/>" >> /etc/apache2/apache2.conf
     echo "   AllowOverride all" >> /etc/apache2/apache2.conf
